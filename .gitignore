@@ -1,0 +1,5 @@
+// filepath: /c:/Users/astam/Documents/WebDevelopment/2. sem/finance_manager_app/.gitignore
+node_modules/
+.env
+.DS_Store
+*.log
