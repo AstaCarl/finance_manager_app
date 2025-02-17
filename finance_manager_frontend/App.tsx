@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import {
   Button,
   FlatList,
@@ -25,6 +24,7 @@ const CategoryList = ({ CategoryTitle, onPress }: CategoryListProps) => (
 export default function App() {
   const [category, setCategory] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
+
 
   const getData = async () => {
     try {
