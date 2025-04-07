@@ -2,26 +2,20 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule} from '@nestjs/config';
+import { EntriesModule } from './entries/entries.module';
+import { dbConfig } from '../data.source';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './authentication/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: +(configService.get<number>('DB_PORT') || 5432),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
-        autoLoadEntities: true,
-        synchronize: true, // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data.
-      }),
-      inject: [ConfigService],
-    }),
+    TypeOrmModule.forRoot(dbConfig), //.options, new compared to slides
+    EntriesModule,
+    UsersModule,
+    AuthModule,
     CategoriesModule,
   ],
   controllers: [AppController],
