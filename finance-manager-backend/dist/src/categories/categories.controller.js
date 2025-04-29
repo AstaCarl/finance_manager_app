@@ -19,6 +19,7 @@ const create_category_dto_1 = require("./dto/create-category.dto");
 const update_category_dto_1 = require("./dto/update-category.dto");
 const jwt_auth_guard_1 = require("../../src/authentication/jwt-auth.guard");
 const users_service_1 = require("../../src/users/users.service");
+const swagger_1 = require("@nestjs/swagger");
 let CategoriesController = class CategoriesController {
     constructor(categoriesService, usersService) {
         this.categoriesService = categoriesService;
@@ -51,6 +52,8 @@ exports.CategoriesController = CategoriesController;
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Create new Category' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Newly created Category' }),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -59,6 +62,11 @@ __decorate([
 ], CategoriesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all Categories' }),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'Retrieved all Categories',
+        type: [create_category_dto_1.CreateCategoryDto],
+    }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)

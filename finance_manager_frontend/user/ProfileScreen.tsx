@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    marginTop: 40,
+    paddingTop: 100,
+    paddingBottom: 40,
     gap: 20,
   },
   wrapper: {
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     minWidth: 200,
   },
   title: {
-    fontSize: 20,
+    fontSize: 32,
     fontWeight: "bold",
   },
   subtitle: {

@@ -19,10 +19,10 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 export const TabsNavigation = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Categories" component={CategoryStackScreen} />
-      <Tab.Screen name="Entries" component={EntriesStackScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen options={{ headerShown: false }} name="Home" component={HomeScreen} />
+      <Tab.Screen options={{ headerShown: false }} name="Categories" component={CategoryStackScreen} />
+      <Tab.Screen options={{ headerShown: false }} name="Entries" component={EntriesStackScreen} />
+      <Tab.Screen options={{ headerShown: false }} name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 };

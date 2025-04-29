@@ -1,15 +1,15 @@
 import { Text } from "@react-navigation/elements";
-import { Button, FlatList, StyleSheet, TextInput, View } from "react-native";
-import { useEffect, useState } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
+import { useState } from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { AppDispatch, RootState } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStackParamList } from "../navigation/StackNavigation";
-import { createEntry, fetchEntries } from "./EntrySlice";
 import { EntryEntity } from "./EntryEntity";
 import SelectDropdown from "react-native-select-dropdown";
-import { fetchCategories } from "../categories/CategorySlice";
 import CustomButton from "../components/CustomButton";
+import { useGetCategories } from "../categories/categoryQueries";
+import { useCreateEntry } from "./entryQuery";
 
 type CategoryListProps = { CategoryTitle: string };
 
@@ -22,15 +22,14 @@ const CategoryList = ({ CategoryTitle }: CategoryListProps) => (
 export default function AddEntry() {
   const [description, setDescription] = useState<string>("");
   const [amount, setAmount] = useState<number>();
-  const [date, setDate] = useState<string>("");
-  const dispatch = useDispatch<AppDispatch>();
-  const entries = useSelector((state: RootState) => state.entry.entries);
-  const categories = useSelector(
-    (state: RootState) => state.category.categories
-  );
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(); // State to store selected category ID
+  const [selectedCategory, setSelectedCategory] = useState<{
+    id: number;
+    title: string;
+  } | null>(null);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+  const { data: categories, isLoading, isError, error } = useGetCategories();
+  const { mutate: createEntry, status } = useCreateEntry();
 
   const handleDescriptionChange = (text: string) => {
     setDescription(text);
@@ -49,16 +48,17 @@ export default function AddEntry() {
       description,
       amount || 0,
       new Date(),
-      selectedCategoryId || 0
+      selectedCategory || { id: 0, title: "" }
     );
-    dispatch(createEntry(newEntry));
-    navigation.navigate("EntriesList");
-    dispatch(fetchEntries());
+    createEntry(newEntry, {
+      onSuccess: () => {
+        setDescription("");
+        setAmount(0);
+        setSelectedCategory(null);
+        navigation.navigate("EntriesList");
+      },
+    });
   };
-
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -85,8 +85,8 @@ export default function AddEntry() {
       <SelectDropdown
         data={categories}
         onSelect={(selectedItem) => {
-          setSelectedCategoryId(selectedItem.id);
-          console.log("Selected category ID:", selectedItem.id);
+          setSelectedCategory(selectedItem);
+          console.log("Selected category:", selectedItem);
         }}
         renderButton={(selectedItem) => {
           return (

@@ -2,18 +2,20 @@ import { Text } from "@react-navigation/elements";
 import { Button, StyleSheet, TextInput, View } from "react-native";
 import { useState } from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { AppDispatch } from "../store/store";
-import { useDispatch } from "react-redux";
 import { CategoryEntity } from "./CategoryEntity";
-import { createCategory } from "./CategorySlice";
 import { RootStackParamList } from "../navigation/StackNavigation";
 import CustomButton from "../components/CustomButton";
+import { useCreateCategory } from "./categoryQueries";
+
 
 
 export default function AddCategory() {
   const [title, setTitle] = useState<string>("");
-  const dispatch = useDispatch<AppDispatch>()
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const { mutate: createCategory, status } = useCreateCategory();
+  const isLoading = status === "pending"; // Derive loading state from status
+
 
 
   const handleCategoryChange = (text: string) => {
@@ -22,9 +24,12 @@ export default function AddCategory() {
 
   const handleAddCategory = () => {
     const newCategory = new CategoryEntity(title);
-    dispatch(createCategory(newCategory))
-    setTitle("");
-      navigation.navigate("Categories");
+    createCategory(newCategory, {
+      onSuccess: () => {
+        setTitle("");
+        navigation.navigate("Categories");
+      }
+    });
 
   };
 
@@ -37,7 +42,7 @@ export default function AddCategory() {
         value={title}
         onChangeText={handleCategoryChange}
       />
-      <CustomButton onPress={handleAddCategory} title="Add new Category" />
+      <CustomButton onPress={handleAddCategory} title={isLoading ? "Adding..." : "Add new category"} />
     </View>
   );
 }

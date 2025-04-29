@@ -1,11 +1,9 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { Button, FlatList, StyleSheet, Text, View } from "react-native";
-import { AppDispatch, RootState } from "../store/store";
-import { useDispatch, useSelector } from "react-redux";
 import { RootStackParamList } from "../navigation/StackNavigation";
-import { deleteEntry, fetchEntries } from "./EntrySlice";
 import CustomButton from "../components/CustomButton";
+import { useDeleteEntry, useGetEntries } from "./entryQuery";
 
 type EntryListProps = {
   entryTitle: string;
@@ -53,19 +51,24 @@ const EntryList = ({
 
 export default function EntriesScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const entries = useSelector((state: RootState) => state.entry.entries);
-  const dispatch = useDispatch<AppDispatch>();
+  const { data: entries, isLoading, isError, error } = useGetEntries();
+  const { mutate: deleteEntry } = useDeleteEntry();
 
-  useEffect(() => {
-    dispatch(fetchEntries());
-  }, []);
+  const totalAmount = (entries ?? []).reduce(
+    (sum, entry) => sum + (entry.amount || 0),
+    0
+  );
 
-  const handleDeleteEntry = async (id: number) => {
-    dispatch(deleteEntry(id));
-    dispatch(fetchEntries());
+  const handleDeleteEntry = (id: number) => {
+    deleteEntry(id, {
+      onSuccess: () => {
+        console.log("deleted category with id", id);
+      },
+      onError: (error) => {
+        console.error("Error deleting category:", error);
+      },
+    });
   };
-  const totalAmount = entries.reduce((sum, entry) => sum + (entry.amount || 0), 0);
-
 
   return (
     <>
@@ -73,8 +76,8 @@ export default function EntriesScreen() {
         <View style={styles.wrapper}>
           <Text style={styles.title}>Your Entries</Text>
           <View style={styles.entryGroup}>
-          <Text style={styles.subtitle}>Your total spendings:</Text>
-          <Text style={styles.entryTotal}>{totalAmount},-</Text>
+            <Text style={styles.subtitle}>Your total spendings:</Text>
+            <Text style={styles.entryTotal}>{totalAmount},-</Text>
           </View>
           <FlatList
             data={entries}
@@ -91,9 +94,9 @@ export default function EntriesScreen() {
           />
         </View>
         <CustomButton
-        onPress={() => navigation.navigate("AddEntry")}
-        title="Add a new Entry"
-      />
+          onPress={() => navigation.navigate("AddEntry")}
+          title="Add a new Entry"
+        />
       </View>
     </>
   );
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 40,
+    paddingTop: 100,
     paddingBottom: 40,
     paddingHorizontal: 30,
     gap: 20,

@@ -4,6 +4,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { JwtAuthGuard } from '../../src/authentication/jwt-auth.guard';
 import { UsersService } from '../../src/users/users.service';
+import { ApiTags, ApiOperation, ApiResponse, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('categories')
 export class CategoriesController {
@@ -11,6 +12,8 @@ export class CategoriesController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
+  @ApiOperation({ summary: 'Create new Category' })
+  @ApiResponse({ status: 201, description: 'Newly created Category' })
   async create(@Req() req, @Body() createCategoryDto: CreateCategoryDto) {
     console.log("req user in controller", req.user);
     if (!req.user) {
@@ -23,6 +26,11 @@ export class CategoriesController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all Categories' })
+  @ApiOkResponse({
+    description: 'Retrieved all Categories',
+    type: [CreateCategoryDto],
+  })
   findAll() {
     return this.categoriesService.findAll();
   }
@@ -33,8 +41,6 @@ export class CategoriesController {
     const userId = req.user.id;
     return this.categoriesService.findAllByUser(userId);
   }
-
-
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {

@@ -17,10 +17,15 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    marginTop: 40,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 40,
+    paddingHorizontal: 30,
     gap: 20,
   },
   wrapper: {
@@ -34,7 +39,7 @@ const styles = StyleSheet.create({
     minWidth: 200,
   },
   title: {
-    fontSize: 20,
+    fontSize: 32,
     fontWeight: 'bold',
   },
   subtitle: {

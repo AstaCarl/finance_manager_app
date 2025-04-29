@@ -4,7 +4,7 @@ import * as SecureStore from "expo-secure-store";
 
 
 export class EntriesAPI {
-  static baseUrl = "http://10.59.169.159:3000/entries";
+  static baseUrl = "http://192.168.0.19:3000/entries";
 
   static async getEntries() {
     const token = await SecureStore.getItemAsync("jwt");

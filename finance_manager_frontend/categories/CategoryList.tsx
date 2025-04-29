@@ -1,11 +1,10 @@
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
-import { AppDispatch, RootState } from '../store/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteCategory, fetchCategories } from './CategorySlice';
 import { RootStackParamList } from '../navigation/StackNavigation';
 import CustomButton from '../components/CustomButton';
+import { useQuery } from '@tanstack/react-query';
+import { useDeleteCategory, useGetCategories } from './categoryQueries';
 
 
 type CategoryListProps = { CategoryTitle: string; onPress: () => void; };
@@ -25,19 +24,27 @@ const CategoryList = ({ CategoryTitle, onPress }: CategoryListProps) => (
 
 export default function CategoryListScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const categories = useSelector((state: RootState) => state.category.categories)
-  const dispatch = useDispatch<AppDispatch>()
-  console.log(categories);
+  const { mutate: deleteCategory } = useDeleteCategory();
+  const { data: categories, isLoading, isError, error } = useGetCategories();
+
+if (isLoading) return <Text>Loading...</Text>
+if (isError) return <Text>Error: {error.message}</Text>
+
+console.log("categories", categories);
+
 
   const handleDeleteCategory = (id: number) => {
-    // console.log("deleted category with id", id);
-    dispatch(deleteCategory(id))
-    dispatch(fetchCategories())
+    deleteCategory(id, {
+      onSuccess: () => {
+        console.log("deleted category with id", id);
+      },
+      onError: (error) => {
+        console.error("Error deleting category:", error)
+      }
+    });
+
   };
 
-  useEffect(() => {
-    dispatch(fetchCategories())
-  }, []);
 
   return (
     <>
@@ -70,7 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 40,
+    paddingTop: 100,
     paddingBottom: 40,
     paddingHorizontal: 30,
     gap: 20,
