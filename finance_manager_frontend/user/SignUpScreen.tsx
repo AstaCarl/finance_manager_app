@@ -32,21 +32,60 @@ export default function SignUpScreen() {
     setPassword(text);
   };
 
+  // const handleSignUp = async () => {
+  //   const newUser = { username, password };
+  //   try {
+  //     const response = await dispatch(signup(newUser));
+  //     console.log("Response: from page", response);
+  //     if (response.payload.id) {
+  //       navigation.navigate("Login");
+  //       Alert.alert(
+  //         "Sign up complete",
+  //         "You need to login to get access to the finance manger app",
+  //         [{ text: "OK", onPress: () => navigation.navigate("Login") }]
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   const handleSignUp = async () => {
     const newUser = { username, password };
     try {
       const response = await dispatch(signup(newUser));
       console.log("Response: from page", response);
-      if (response.payload.id) {
+  
+      if (response.payload?.id) {
+        // Successful signup
         navigation.navigate("Login");
         Alert.alert(
           "Sign up complete",
-          "You need to login to get access to the finance manger app",
+          "You need to login to get access to the finance manager app",
           [{ text: "OK", onPress: () => navigation.navigate("Login") }]
+        );
+      } else if (response.payload?.statusCode === 409) {
+        // User already exists
+        Alert.alert(
+          "Sign up failed",
+          "User already exists. Please try a different username.",
+          [{ text: "OK" }]
+        );
+      } else {
+        // Other errors
+        Alert.alert(
+          "Sign up failed",
+          "An unexpected error occurred. Please try again later.",
+          [{ text: "OK" }]
         );
       }
     } catch (error) {
       console.error(error);
+      Alert.alert(
+        "Sign up failed",
+        "An unexpected error occurred. Please try again later.",
+        [{ text: "OK" }]
+      );
     }
   };
 
@@ -91,8 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    marginTop: 40,
-    paddingTop: 40, 
+    paddingTop: 100, 
     gap: 20,
   },
   wrapper: {
@@ -115,7 +153,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   title: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
   },
   group: {
@@ -125,7 +163,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 20,
   },
   categoryItem: {},
   categoryContainer: {

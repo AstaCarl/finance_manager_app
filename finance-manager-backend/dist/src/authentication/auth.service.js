@@ -38,8 +38,12 @@ let AuthService = class AuthService {
     }
     async login(user) {
         const userFromDb = await this.usersService.findOne(user.username);
+        if (!userFromDb) {
+            throw new common_1.UnauthorizedException('Invalid username or password');
+        }
         const payload = {
-            username: user.username, id: userFromDb.id
+            username: user.username,
+            id: userFromDb.id,
         };
         return {
             access_token: this.jwtService.sign(payload),

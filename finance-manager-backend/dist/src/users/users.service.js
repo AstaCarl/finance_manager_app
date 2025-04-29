@@ -38,10 +38,8 @@ let UsersService = class UsersService {
         const result = await this.userRepository.findOne({
             where: { username: username },
         });
-        if (!result) {
-            throw new Error(`User with username ${username} not found`);
-        }
-        return result;
+        console.log("findOne user service result:", result);
+        return result || null;
     }
     async findOneById(userId) {
         const result = await this.userRepository.findOne({ where: { id: userId } });

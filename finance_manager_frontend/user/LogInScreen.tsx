@@ -72,8 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    marginTop: 40,
-    paddingTop: 40,
+    paddingTop: 100,
     gap: 20,
   },
   wrapper: {
@@ -102,11 +101,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   title: {
-    fontSize: 20,
+    fontSize: 32,
     fontWeight: "bold",
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 20,
   },
   categoryItem: {},
   categoryContainer: {

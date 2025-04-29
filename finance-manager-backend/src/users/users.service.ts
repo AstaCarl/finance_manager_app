@@ -26,16 +26,24 @@ export class UsersService {
     return user;
   }
 
-  async findOne(username: string): Promise<UserEntity> {
+  // async findOne(username: string): Promise<UserEntity> {
+  //   const result = await this.userRepository.findOne({
+  //     where: { username: username },
+  //   });
+  //   // console.log("findOne user service", result);
+
+  //   if (!result) {
+  //     throw new Error(`User with username ${username} not found`);
+  //   }
+  //   return result;
+  // }
+
+  async findOne(username: string): Promise<UserEntity | null> {
     const result = await this.userRepository.findOne({
       where: { username: username },
     });
-    // console.log("findOne user service", result);
-
-    if (!result) {
-      throw new Error(`User with username ${username} not found`);
-    }
-    return result;
+    console.log("findOne user service result:", result);
+    return result || null; // Return null if the user is not found
   }
 
   async findOneById(userId: number): Promise<UserEntity> {

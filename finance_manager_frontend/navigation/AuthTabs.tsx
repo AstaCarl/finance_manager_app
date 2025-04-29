@@ -13,8 +13,8 @@ const Tab = createBottomTabNavigator<RootAuthTabParamList>();
 export const AuthTabs = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Login" component={LogInScreen} />
-      <Tab.Screen name="SignUp" component={SignUpScreen} />
+      <Tab.Screen options={{ headerShown: false }}  name="Login" component={LogInScreen} />
+      <Tab.Screen options={{ headerShown: false }}  name="SignUp" component={SignUpScreen} />
     </Tab.Navigator>
   );
 };
